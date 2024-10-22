@@ -295,23 +295,32 @@
         app:layout_constraintTop_toBottomOf="@id/cl_123"
         >
         <Button
-            android:id="@+id/b_0"
-            android:onClick="numberClicked"
+            android:id="@+id/b_percentage"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toLeftOf="@id/v_center_horizontal"
+            app:layout_constraintRight_toLeftOf="@id/b_0"
+            android:text="%"
+            android:onClick="percentageClicked"
+            style="@style/style_calc_button"
+            />
+        <Button
+            android:id="@+id/b_0"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintLeft_toRightOf="@id/b_percentage"
+            app:layout_constraintRight_toLeftOf="@id/b_radix_point"
             android:text="0"
+            android:onClick="numberClicked"
             style="@style/style_calc_button"
             />
         <Button
             android:id="@+id/b_radix_point"
-            style="@style/style_calc_button"
-            app:layout_constraintTop_toTopOf="parent"
             android:layout_margin="1dp"
-            android:onClick="decimalPointClicked"
+            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintLeft_toRightOf="@id/v_center_horizontal"
             app:layout_constraintRight_toLeftOf="@id/b_equal"
             android:text="."
+            android:onClick="decimalPointClicked"
+            style="@style/style_calc_button"
             />
 
         <Button

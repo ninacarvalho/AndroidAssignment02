@@ -158,10 +158,14 @@ public class Calculator {
 
     public void processPercentage() {
         if (!pendingOperation.isEmpty()) {
-            performPendingOperation();
-            pendingOperation = "%";  // Set % as the pending operation
-            clearPartial();  // Clear for the next input
+            handlePercentage();
+        } else {
+            pendingOperation = "%";
+            handlePercentage();
         }
+        pendingOperation = ""; // Reset operation after calculation
+        numberString = String.valueOf(result); // Display result as the new current number
+        detailsString = "Result: " + result;
     }
 
     private void performPendingOperation() {
