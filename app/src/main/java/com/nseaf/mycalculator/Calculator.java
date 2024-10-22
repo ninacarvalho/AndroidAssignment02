@@ -29,6 +29,7 @@ public class Calculator {
             realNumber = Double.parseDouble(numberString);
             currentNumber = realNumber;
         } else {
+            System.out.println(intNumber);
             intNumber = intNumber * 10 + i;
             numberString = String.valueOf(intNumber);
             currentNumber = Double.parseDouble(numberString); // Update current number
@@ -66,16 +67,19 @@ public class Calculator {
     public void memPlus() {
         memory += currentNumber;
         detailsString = "Memory: " + memory;
+        clearPartial();
     }
 
     public void memMinus() {
         memory -= currentNumber;
         detailsString = "Memory: " + memory;
+        clearPartial();
     }
 
     public void memClear() {
         // Clear the memory
         memory = 0.0;
+        numberString = "";
         detailsString = "Memory cleared";
     }
 
@@ -154,6 +158,9 @@ public class Calculator {
         if (!pendingOperation.isEmpty()) {
             performPendingOperation();
             pendingOperation = ""; // Reset operation after calculation
+            if(detailsString.toLowerCase().contains("error")) {
+                return;
+            }
             numberString = String.valueOf(result); // Display result as the new current number
             detailsString = "Result: " + result;
         }
@@ -227,4 +234,11 @@ public class Calculator {
         clearOnce = false; // Reset the flag if any other button is clicked
     }
 
+    public String getNumberString() {
+        return numberString;
+    }
+
+    public String getDetailsString() {
+        return detailsString;
+    }
 }
