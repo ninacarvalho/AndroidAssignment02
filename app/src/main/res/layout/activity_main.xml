@@ -140,6 +140,7 @@
             app:layout_constraintLeft_toRightOf="@id/b_pi"
             app:layout_constraintRight_toRightOf="parent"
             android:text="	÷	"
+            android:onClick="divideClicked"
             />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
@@ -187,6 +188,7 @@
                 app:layout_constraintLeft_toRightOf="@id/b_9"
                 app:layout_constraintRight_toRightOf="parent"
                 android:text="×"
+                android:onClick="multiplyClicked"
                 />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -233,6 +235,7 @@
             app:layout_constraintLeft_toRightOf="@id/b_6"
             app:layout_constraintRight_toRightOf="parent"
             android:text="-"
+            android:onClick="subtractClicked"
             />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -305,7 +308,7 @@
             style="@style/style_calc_button"
             app:layout_constraintTop_toTopOf="parent"
             android:layout_margin="1dp"
-            android:onClick="numberClicked"
+            android:onClick="decimalPointClicked"
             app:layout_constraintLeft_toRightOf="@id/v_center_horizontal"
             app:layout_constraintRight_toLeftOf="@id/b_equal"
             android:text="."

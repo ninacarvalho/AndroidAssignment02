@@ -19,14 +19,30 @@ public class Calculator {
     }
 
     public void processNumber(int i) {
-        if(numberString.length()<12) {  // limit of 12 digits
+        if (numberString.length() >= 12) { // limit of 12 digits
+            detailsString = "The number is too long...";
+            return;
+        }
+        if (numHasRadixPoint) {  // If the number already has a decimal point
+            numberString += i;  // Append the number after the decimal
+            realNumber = Double.parseDouble(numberString);
+            currentNumber = realNumber;
+        } else {
+            intNumber = intNumber * 10 + i;
+            numberString = String.valueOf(intNumber);
+            currentNumber = Double.parseDouble(numberString); // Update current number
+        }
+        detailsString = "Clicked: " + i;
+
+/*
+        if(numberString.length() < 12) {  // limit of 12 digits
             intNumber = intNumber * 10 + i;
             numberString = String.valueOf(intNumber);
             currentNumber = Double.parseDouble(numberString); // Update current number
             detailsString = "Clicked: " + i;
         }
         else
-            detailsString="The number is too long...";
+            detailsString="The number is too long..."; */
     }
 
     public void clearClicked() {
@@ -46,7 +62,7 @@ public class Calculator {
         if(isIntMemory){
             if(isIntNumber) {
                 memoryInt += intNumber;
-                detailsString = "Memory: "+memoryInt;
+                detailsString = "Memory: " + memoryInt;
             }
             else {
                 isIntNumber=false;
@@ -67,15 +83,13 @@ public class Calculator {
         }
     }
 
-    public void add() {
-        if (!pendingOperation.isEmpty()) {
-            performPendingOperation();
-        } else {
-            result = currentNumber;
+    public void decimalPointClicked() {
+        if (!numHasRadixPoint) {
+            numberString += ".";
+            numHasRadixPoint = true;
+            isIntNumber = false;
+            detailsString = "Decimal point added";
         }
-        detailsString = "Stored for addition: " + result;
-        pendingOperation = "+";
-        clearPartial();// Clear for the next input
     }
 
     public void clearPartial() {
@@ -88,16 +102,48 @@ public class Calculator {
         currentNumber = 0.0;
     }
 
+    public void add() {
+        if (!pendingOperation.isEmpty()) {
+            performPendingOperation();
+        } else {
+            result = currentNumber;
+        }
+        detailsString = "Stored for addition: " + result;
+        pendingOperation = "+";
+        clearPartial(); // Clear for the next input
+    }
+
     public void subtract() {
-        // Add logic for subtraction
+        if (!pendingOperation.isEmpty()) {
+            performPendingOperation();
+        } else {
+            result = currentNumber;
+        }
+        detailsString = "Stored for subtraction: " + result;
+        pendingOperation = "-";
+        clearPartial();
     }
 
     public void multiply() {
-        // Add logic for multiplication
+        if (!pendingOperation.isEmpty()) {
+            performPendingOperation();
+        } else {
+            result = currentNumber;
+        }
+        detailsString = "Stored for myltiplying: " + result;
+        pendingOperation = "*";
+        clearPartial();
     }
 
     public void divide() {
-        // Add logic for division
+        if (!pendingOperation.isEmpty()) {
+            performPendingOperation();
+        } else {
+            result = currentNumber;
+        }
+        detailsString = "Stored for division: " + result;
+        pendingOperation = "/";
+        clearPartial();
     }
 
     public void equals() {
@@ -110,11 +156,64 @@ public class Calculator {
         }
     }
 
-    private void performPendingOperation() {
-        if (pendingOperation.equals("+")) {
-            result += currentNumber;
+    public void processPercentage() {
+        if (!pendingOperation.isEmpty()) {
+            performPendingOperation();
+            pendingOperation = "%";  // Set % as the pending operation
+            clearPartial();  // Clear for the next input
         }
-        //TODO add other operations here.
+    }
+
+    private void performPendingOperation() {
+        switch (pendingOperation) {
+            case "+":
+                result += currentNumber;
+                break;
+            case "-":
+                result -= currentNumber;
+                break;
+            case "*":
+                result *= currentNumber;
+                break;
+            case "/":
+                if (currentNumber != 0) {
+                    result /= currentNumber;
+                } else {
+                    detailsString = "Error: Division by zero";
+                }
+                break;
+            case "%":
+                handlePercentage();
+                break;
+            default:
+                detailsString = "Unknown operation";
+                break;
+        }
+    }
+
+    private void handlePercentage() {
+        switch (pendingOperation) {
+            case "+":
+                result += result * (currentNumber / 100);
+                break;
+            case "-":
+                result -= result * (currentNumber / 100);
+                break;
+            case "*":
+                result *= (currentNumber / 100);
+                break;
+            case "/":
+                if (currentNumber != 0) {
+                    result /= (currentNumber / 100);
+                } else {
+                    detailsString = "Error: Division by zero";
+                }
+                break;
+            default:
+                //simple percentage
+                result = currentNumber / 100;
+                break;
+        }
     }
 
     public String getNumberString() {

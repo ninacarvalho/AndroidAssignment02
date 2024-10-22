@@ -57,13 +57,38 @@ public class MainActivity extends AppCompatActivity {
         updateCalcUI();
     }
 
+    public void decimalPointClicked(View view) {
+        calculator.decimalPointClicked(); // Call the method in Calculator to handle the decimal point
+        updateCalcUI(); // Update the display
+    }
+
     public void addClicked(View view) {
         calculator.add();
         updateCalcUI();
     }
 
+    public void subtractClicked(View view) {
+        calculator.subtract();
+        updateCalcUI();
+    }
+
+    public void multiplyClicked(View view) {
+        calculator.multiply();
+        updateCalcUI();
+    }
+
+    public void divideClicked(View view) {
+        calculator.divide();
+        updateCalcUI();
+    }
+
     public void equalsClicked(View view) {
         calculator.equals();
+        updateCalcUI();
+    }
+
+    public void percentageClicked(View view) {
+        calculator.processPercentage();
         updateCalcUI();
     }
 }
