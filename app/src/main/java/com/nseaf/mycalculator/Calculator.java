@@ -7,9 +7,10 @@ public class Calculator {
     double realNumber; //Represents the current number in double (real number) form.
     boolean isIntNumber=true; // Tracks if the current number is an integer.
     boolean numHasRadixPoint=false; // Tracks if the current number has a decimal point.
-    long memoryInt=0; //Stores the integer value in memory.
-    double memoryDouble=0.0; // Stores the double value in memory.
+    double memory = 0.0; // Stores the double value in memory.
     boolean isIntMemory=true; //Tracks if the memory value is an integer.
+
+    boolean clearOnce = false;  // Tracks if clear button was clicked once
 
     private double result = 0.0; // Stores the result of the pending operation.
     private String pendingOperation = ""; //Stores the current pending operation.
@@ -33,57 +34,59 @@ public class Calculator {
             currentNumber = Double.parseDouble(numberString); // Update current number
         }
         detailsString = "Clicked: " + i;
-
-/*
-        if(numberString.length() < 12) {  // limit of 12 digits
-            intNumber = intNumber * 10 + i;
-            numberString = String.valueOf(intNumber);
-            currentNumber = Double.parseDouble(numberString); // Update current number
-            detailsString = "Clicked: " + i;
-        }
-        else
-            detailsString="The number is too long..."; */
+        resetClearFlag();
     }
 
     public void clearClicked() {
-        numberString="0";
-        detailsString="";
-        intNumber=0;
-        realNumber=0.0;
-        isIntNumber=true;
-        numHasRadixPoint=false;
+        if (!clearOnce) {
+            // First click: clear the current displayed number
+            numberString = "0";
+            intNumber = 0;
+            realNumber = 0.0;
+            isIntNumber = true;
+            numHasRadixPoint = false;
+            currentNumber = 0.0;
+            detailsString = "Cleared current number";
+            clearOnce = true;  // Set flag for next click
+        } else {
+            // Second consecutive click: reset everything
+            resetCalculator();
+            detailsString = "Calculator reset";
+            clearOnce = false;  // Reset flag after full clear
+        }
+    }
 
+    private void resetCalculator() {
         result = 0.0;
-        currentNumber = 0.0;
         pendingOperation = "";
+        memory = 0.0;
+        isIntMemory = true;
     }
 
-    public void memPlusClicked() {
-        if(isIntMemory){
-            if(isIntNumber) {
-                memoryInt += intNumber;
-                detailsString = "Memory: " + memoryInt;
-            }
-            else {
-                isIntNumber=false;
-                memoryDouble = memoryInt + realNumber;
-            }
-        }
+    public void memPlus() {
+        memory += currentNumber;
+        detailsString = "Memory: " + memory;
     }
 
-    public void memMinusClicked() {
-        if (isIntMemory) {
-            if (isIntNumber) {
-                memoryInt -= intNumber;
-                detailsString = "Memory: " + memoryInt;
-            } else {
-                memoryDouble = memoryInt - realNumber;
-                isIntNumber = false;
-            }
-        }
+    public void memMinus() {
+        memory -= currentNumber;
+        detailsString = "Memory: " + memory;
     }
 
-    public void decimalPointClicked() {
+    public void memClear() {
+        // Clear the memory
+        memory = 0.0;
+        detailsString = "Memory cleared";
+    }
+
+    public void memRecall() {
+        // Recall the memory and set it as the current number
+        currentNumber = memory;
+        numberString = String.valueOf(currentNumber);
+        detailsString = "Recalled Memory: " + memory;
+    }
+
+    public void decimalPoint() {
         if (!numHasRadixPoint) {
             numberString += ".";
             numHasRadixPoint = true;
@@ -220,11 +223,8 @@ public class Calculator {
         }
     }
 
-    public String getNumberString() {
-        return numberString;
+    private void resetClearFlag() {
+        clearOnce = false; // Reset the flag if any other button is clicked
     }
 
-    public String getDetailsString() {
-        return detailsString;
-    }
 }

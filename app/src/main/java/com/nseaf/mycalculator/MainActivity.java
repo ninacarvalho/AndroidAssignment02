@@ -48,17 +48,27 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void memPlusClicked(View view) {
-        calculator.memPlusClicked();
+        calculator.memPlus();
         updateCalcUI();
     }
 
     public void memMinusClicked(View view) {
-        calculator.memMinusClicked();
+        calculator.memMinus();
+        updateCalcUI();
+    }
+
+    public void memClearClicked(View view) {
+        calculator.memClear();
+        updateCalcUI();
+    }
+
+    public void memRecallClicked(View view) {
+        calculator.memRecall();
         updateCalcUI();
     }
 
     public void decimalPointClicked(View view) {
-        calculator.decimalPointClicked(); // Call the method in Calculator to handle the decimal point
+        calculator.decimalPoint(); // Call the method in Calculator to handle the decimal point
         updateCalcUI(); // Update the display
     }
 
