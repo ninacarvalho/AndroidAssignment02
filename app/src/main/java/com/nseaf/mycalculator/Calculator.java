@@ -27,14 +27,14 @@ public class Calculator {
             numberString += i;  // Append the number after the decimal
         } else {
             intNumber = intNumber * 10 + i;
-            numberString = String.valueOf(intNumber);
+            setNumberString(intNumber);
         }
 
         currentNumber = Double.parseDouble(numberString); // Update current number
 
         if (isNextNegative) {
             currentNumber = -currentNumber;
-            numberString = String.valueOf(currentNumber);  // Update display string
+            setNumberString(currentNumber);
             isNextNegative = false;  // Reset flag
         }
 
@@ -44,8 +44,9 @@ public class Calculator {
 
     // Process Pi input
     public void processPi() {
-        currentNumber = Math.PI;  // Assign Pi value to the current number
-        numberString = String.format("%.10f", currentNumber);  // Format Pi to 10 decimal places
+        currentNumber = getPi();  // Assign Pi value to the current number
+        setNumberString(currentNumber);
+
         detailsString = "π";  // Show Pi symbol in the details
         resetClearFlag();
     }
@@ -78,14 +79,15 @@ public class Calculator {
     public void memClear() {
         // Clear the memory
         memory = 0.0;
-        numberString = "";
+        numberString = "0";
         detailsString = "Memory cleared";
     }
 
     public void memRecall() {
         // Recall the memory and set it as the current number
         currentNumber = memory;
-        numberString = String.valueOf(currentNumber);
+        setNumberString(currentNumber);
+
         detailsString = "Recalled Memory: " + memory;
     }
 
@@ -125,7 +127,8 @@ public class Calculator {
             if(detailsString.toLowerCase().contains("error")) {
                 return;
             }
-            numberString = String.valueOf(result); // Display result as the new current number
+           setNumberString(result);
+
             detailsString = "Result: " + result;
             currentNumber = result;
         }
@@ -135,7 +138,8 @@ public class Calculator {
     public void calculateExp() {
         result = Math.exp(currentNumber);  // Calculate e^x
         detailsString = "e^" + currentNumber + " = " + result;
-        numberString = String.valueOf(result);
+        setNumberString(result);
+
         clearPartial();  // Prepare for next input
     }
 
@@ -147,7 +151,8 @@ public class Calculator {
             handlePercentage();
         }
         pendingOperation = "";
-        numberString = String.valueOf(result);
+        setNumberString(result);
+
         detailsString = "Result: " + result;
     }
 
@@ -227,6 +232,10 @@ public class Calculator {
         clearOnce = false;
     }
 
+    private double getPi() {
+        return Math.round(Math.PI * 1_000_000) / 1_000_000.0;
+    }
+
     // Getters for UI
     public String getNumberString() {
         return numberString;
@@ -234,5 +243,9 @@ public class Calculator {
 
     public String getDetailsString() {
         return detailsString;
+    }
+
+    private void setNumberString(double number) {
+        numberString = String.format("%.6f", number).replaceAll("\\.?0*$", "");
     }
 }
