@@ -1,67 +1,66 @@
 package com.nseaf.mycalculator;
 
 public class Calculator {
-    String numberString="0"; //Stores the current number as a string
-    String detailsString=""; //Holds details of the last operation performed.
-    long intNumber; //Represents the current number in integer form.
-    double realNumber; //Represents the current number in double (real number) form.
-    boolean isIntNumber=true; // Tracks if the current number is an integer.
-    boolean numHasRadixPoint=false; // Tracks if the current number has a decimal point.
-    double memory = 0.0; // Stores the double value in memory.
-    boolean isIntMemory=true; //Tracks if the memory value is an integer.
+    private String numberString = "0";   // Stores the current number as a string
+    private String detailsString = "";   // Holds details of the last operation performed.
+    private long intNumber;              // Represents the current number in integer form.
+    private boolean isIntNumber = true;  // Tracks if the current number is an integer.
+    private boolean numHasRadixPoint = false;  // Tracks if the current number has a decimal point.
 
-    boolean clearOnce = false;  // Tracks if clear button was clicked once
+    private double memory = 0.0;         // Stores the double value in memory.
+    private boolean clearOnce = false;   // Tracks if the clear button was clicked once
+    private double result = 0.0;         // Stores the result of the pending operation.
+    private String pendingOperation = ""; // Stores the current pending operation.
+    private double currentNumber = 0.0;  // Holds the current number being processed.
 
-    private double result = 0.0; // Stores the result of the pending operation.
-    private String pendingOperation = ""; //Stores the current pending operation.
-    private double currentNumber = 0.0; //Holds the current number being processed for calculation.
+    private boolean isNextNegative = false;  // Tracks if the next number should be negative
 
-    public Calculator() {
-    }
+    public Calculator() {}
 
     public void processNumber(int i) {
         if (numberString.length() >= 12) { // limit of 12 digits
             detailsString = "The number is too long...";
             return;
         }
-        if (numHasRadixPoint) {  // If the number already has a decimal point
+        // If the number already has a decimal point
+        if (numHasRadixPoint) {
             numberString += i;  // Append the number after the decimal
-            realNumber = Double.parseDouble(numberString);
-            currentNumber = realNumber;
         } else {
-            System.out.println(intNumber);
             intNumber = intNumber * 10 + i;
             numberString = String.valueOf(intNumber);
-            currentNumber = Double.parseDouble(numberString); // Update current number
         }
+
+        currentNumber = Double.parseDouble(numberString); // Update current number
+
+        if (isNextNegative) {
+            currentNumber = -currentNumber;
+            numberString = String.valueOf(currentNumber);  // Update display string
+            isNextNegative = false;  // Reset flag
+        }
+
         detailsString = "Clicked: " + i;
         resetClearFlag();
     }
 
+    // Process Pi input
+    public void processPi() {
+        currentNumber = Math.PI;  // Assign Pi value to the current number
+        numberString = String.format("%.10f", currentNumber);  // Format Pi to 10 decimal places
+        detailsString = "π";  // Show Pi symbol in the details
+        resetClearFlag();
+    }
+
+    // Clear button handler
     public void clearClicked() {
         if (!clearOnce) {
-            // First click: clear the current displayed number
-            numberString = "0";
-            intNumber = 0;
-            realNumber = 0.0;
-            isIntNumber = true;
-            numHasRadixPoint = false;
-            currentNumber = 0.0;
+            clearPartial();
             detailsString = "Cleared current number";
             clearOnce = true;  // Set flag for next click
         } else {
-            // Second consecutive click: reset everything
             resetCalculator();
             detailsString = "Calculator reset";
             clearOnce = false;  // Reset flag after full clear
         }
-    }
-
-    private void resetCalculator() {
-        result = 0.0;
-        pendingOperation = "";
-        memory = 0.0;
-        isIntMemory = true;
     }
 
     public void memPlus() {
@@ -94,67 +93,32 @@ public class Calculator {
         if (!numHasRadixPoint) {
             numberString += ".";
             numHasRadixPoint = true;
-            isIntNumber = false;
             detailsString = "Decimal point added";
         }
     }
 
-    public void clearPartial() {
-        numberString="";
-        intNumber=0;
-        realNumber=0.0;
-        isIntNumber=true;
-        numHasRadixPoint=false;
-
-        currentNumber = 0.0;
-    }
-
     public void add() {
-        if (!pendingOperation.isEmpty()) {
-            performPendingOperation();
-        } else {
-            result = currentNumber;
-        }
-        detailsString = "Stored for addition: " + result;
-        pendingOperation = "+";
-        clearPartial(); // Clear for the next input
+        storePendingOperation("+");
     }
 
     public void subtract() {
-        if (!pendingOperation.isEmpty()) {
-            performPendingOperation();
+        if (numberString.equals("0") || numberString.equals("")) {
+            isNextNegative = true;
+            detailsString = "-";
         } else {
-            result = currentNumber;
+            storePendingOperation("-");
         }
-        detailsString = "Stored for subtraction: " + result;
-        pendingOperation = "-";
-        clearPartial();
     }
 
     public void multiply() {
-        if (!pendingOperation.isEmpty()) {
-            performPendingOperation();
-        } else {
-            result = currentNumber;
-        }
-        detailsString = "Stored for myltiplying: " + result;
-        pendingOperation = "*";
-        clearPartial();
+        storePendingOperation("*");
     }
 
     public void divide() {
-        if (!pendingOperation.isEmpty()) {
-            performPendingOperation();
-        } else {
-            result = currentNumber;
-        }
-        detailsString = "Stored for division: " + result;
-        pendingOperation = "/";
-        clearPartial();
+        storePendingOperation("/");
     }
 
     public void equals() {
-        // Perform the pending operation and show the result.
         if (!pendingOperation.isEmpty()) {
             performPendingOperation();
             pendingOperation = ""; // Reset operation after calculation
@@ -163,18 +127,27 @@ public class Calculator {
             }
             numberString = String.valueOf(result); // Display result as the new current number
             detailsString = "Result: " + result;
+            currentNumber = result;
         }
     }
 
+    // Calculate exponent (e^x)
+    public void calculateExp() {
+        result = Math.exp(currentNumber);  // Calculate e^x
+        detailsString = "e^" + currentNumber + " = " + result;
+        numberString = String.valueOf(result);
+        clearPartial();  // Prepare for next input
+    }
+
     public void processPercentage() {
-        if (!pendingOperation.isEmpty()) {
-            handlePercentage();
+        if (pendingOperation.isEmpty()) {
+            result = currentNumber / 100;
+            currentNumber = result;
         } else {
-            pendingOperation = "%";
             handlePercentage();
         }
-        pendingOperation = ""; // Reset operation after calculation
-        numberString = String.valueOf(result); // Display result as the new current number
+        pendingOperation = "";
+        numberString = String.valueOf(result);
         detailsString = "Result: " + result;
     }
 
@@ -220,18 +193,42 @@ public class Calculator {
                     detailsString = "Error: Division by zero";
                 }
                 break;
-            default:
-                //simple percentage
-                result = currentNumber / 100;
-                break;
         }
         currentNumber = result;
     }
 
-    private void resetClearFlag() {
-        clearOnce = false; // Reset the flag if any other button is clicked
+    private void storePendingOperation(String operation) {
+        if (!pendingOperation.isEmpty()) {
+            performPendingOperation();
+        } else {
+            result = currentNumber;
+        }
+
+        pendingOperation = operation;
+        clearPartial();
+        detailsString = "Stored for " + operation;
     }
 
+    private void resetCalculator() {
+        result = 0.0;
+        pendingOperation = "";
+        memory = 0.0;
+        clearPartial();
+    }
+
+    public void clearPartial() {
+        numberString="";
+        intNumber=0;
+        numHasRadixPoint=false;
+
+        currentNumber = 0.0;
+    }
+
+    private void resetClearFlag() {
+        clearOnce = false;
+    }
+
+    // Getters for UI
     public String getNumberString() {
         return numberString;
     }

@@ -33,13 +33,14 @@ public class MainActivity extends AppCompatActivity {
             case R.id.b_7: calculator.processNumber(7); break;
             case R.id.b_8: calculator.processNumber(8); break;
             case R.id.b_9: calculator.processNumber(9); break;
+            case R.id.b_pi: calculator.processPi(); break;
         }
         updateCalcUI();
     }
 
     private void updateCalcUI() {
-        tvNumber.setText(calculator.numberString);
-        tvDetails.setText(calculator.detailsString);
+        tvNumber.setText(calculator.getNumberString());
+        tvDetails.setText(calculator.getDetailsString());
     }
 
     public void clearClicked(View view) {
@@ -91,6 +92,12 @@ public class MainActivity extends AppCompatActivity {
         calculator.divide();
         updateCalcUI();
     }
+
+    public void expClicked(View view) {
+        calculator.calculateExp();
+        updateCalcUI();  // Update the display with the result
+    }
+
 
     public void equalsClicked(View view) {
         calculator.equals();
