@@ -100,4 +100,91 @@ public class CalculatorTest {
         }
         assertEquals("The number is too long...", calculator.getDetailsString()); // Check for max limit
     }
+
+    @Test
+    public void testPercentageAddition() {
+        calculator.processNumber(50);
+        calculator.add();
+        calculator.processNumber(10);
+        calculator.processPercentage();
+        calculator.equals();
+        assertEquals("55.0", calculator.getNumberString());  // 50 + 10% of 50 = 55
+    }
+
+    @Test
+    public void testPercentageSubtraction() {
+        calculator.processNumber(100);
+        calculator.subtract();
+        calculator.processNumber(20);
+        calculator.processPercentage();
+        calculator.equals();
+        assertEquals("80.0", calculator.getNumberString());  // 100 - 20% of 100 = 80
+    }
+
+    @Test
+    public void testPercentageMultiplication() {
+        calculator.processNumber(200);
+        calculator.multiply();
+        calculator.processNumber(10);
+        calculator.processPercentage();
+        calculator.equals();
+        assertEquals("20.0", calculator.getNumberString());  // 200 * 10% = 20
+    }
+
+    @Test
+    public void testPercentageDivision() {
+        calculator.processNumber(100);
+        calculator.divide();
+        calculator.processNumber(25);
+        calculator.processPercentage();
+        calculator.equals();
+        assertEquals("400.0", calculator.getNumberString());  // 100 / 25% = 400
+    }
+
+    // Pressing subtract without a number should prepare for a negative number
+    @Test
+    public void testNegativeNumberAddition() {
+        calculator.subtract();
+        calculator.processNumber(5);
+        calculator.add();
+        calculator.processNumber(3);
+        calculator.equals();
+        assertEquals("-2.0", calculator.getNumberString());  // -5 + 3 = -2
+    }
+
+    @Test
+    public void testNegativeNumberMultiplication() {
+        calculator.subtract();
+        calculator.processNumber(7);  // Input negative 7
+        calculator.multiply();
+        calculator.processNumber(2);
+        calculator.equals();
+        assertEquals("-14.0", calculator.getNumberString());  // -7 * 2 = -14
+    }
+
+    @Test
+    public void testMemoryAndOperations() {
+        calculator.processNumber(20);
+        calculator.memPlus();  // Add 20 to memory
+        calculator.processNumber(5);
+        calculator.add();
+        calculator.memRecall();  // Recall memory (20)
+        calculator.equals();
+        assertEquals("25.0", calculator.getNumberString());  // 5 + 20 = 25
+    }
+
+    @Test
+    public void testStartingWithDecimal() {
+        calculator.decimalPoint();  // Input starts with decimal
+        calculator.processNumber(5);
+        assertEquals("0.5", calculator.getNumberString());  // Check if output is correct
+    }
+
+    @Test
+    public void testLongDecimalPrecision() {
+        calculator.processNumber(1);
+        calculator.decimalPoint();
+        calculator.processNumber(23456789);  // Input a long decimal number
+        assertEquals("1.23456789", calculator.getNumberString());  // Should handle up to 10 digits after decimal
+    }
 }

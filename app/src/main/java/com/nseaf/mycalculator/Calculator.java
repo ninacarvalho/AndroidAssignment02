@@ -217,10 +217,9 @@ public class Calculator {
     }
 
     public void clearPartial() {
-        numberString="";
+        numberString="0";
         intNumber=0;
         numHasRadixPoint=false;
-
         currentNumber = 0.0;
     }
 
