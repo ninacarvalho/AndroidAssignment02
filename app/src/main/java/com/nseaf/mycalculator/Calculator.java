@@ -196,9 +196,6 @@ public class Calculator {
                     detailsString = "Error: Division by zero";
                 }
                 break;
-            case "%":
-                handlePercentage();
-                break;
             default:
                 detailsString = "Unknown operation";
                 break;
@@ -228,6 +225,7 @@ public class Calculator {
                 result = currentNumber / 100;
                 break;
         }
+        currentNumber = result;
     }
 
     private void resetClearFlag() {
